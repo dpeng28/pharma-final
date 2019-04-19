@@ -2,13 +2,14 @@ function AUCcostout = cost_func(x1)
 
 
 load('synthe_patient.mat');
-p = bigTable(5000,:);
+p = bigTable(1000,:);
 p(:,1) = 70;%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 p(:,2) = 0;% no exercise
 p(:,19) = 196.5;% baseline
-p(:,23) = 9; % not diet
+p(:,23) = 0; % not diet
 p = [p]';
 p(5:7)=x1(1:3)';
+%p(:,10)= 18;%%%%%
 
 
 TimeLen = 1000;

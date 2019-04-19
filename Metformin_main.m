@@ -17,14 +17,15 @@ BalanceD = DrugIn - DrugOut - TotalD(:,2) - TotalD(:,3)-TotalD(:,1)-Y1(:,1); %(z
 if abs(mean(BalanceD))>1e-6
     
     disp('Mass imbalance possible: ')
-    disp(BalanceD)
+    %disp(BalanceD)
 end
 
 %save raw.mat T1 Y1 BalanceD
 %
 
+
 out1 = T1;
-out2 = Y1(:,4).*(1000)./(p(10)*p(1)); % unit correction: ug/ml or mg/l
+out2 = Y1(:,4);%.*(1000)./(p(10)*p(1)); % unit correction: ug/ml or mg/l
 out3 = Y1;
 
 end

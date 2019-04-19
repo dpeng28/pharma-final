@@ -19,6 +19,8 @@ TotalDo1=[];
 TotalDo2=[];
 TotalDo3=[];
 TotalDo4=[];
+TotalDo5=[];
+TotalDo6=[];
 DrugIno = [];
 DrugOuto = [];
 DrugIn = zeros(650,1);
@@ -26,6 +28,8 @@ a=0;
 for i = 1:length(TimeLen)
 
         y0(1) = y0(1)+500;
+         
+         
 
     options = odeset('MaxStep',5e-2, 'AbsTol', 1e-5,'RelTol', 1e-5,'InitialStep', 1e-2);
     [T1,Y1] = ode45(@Meformin_eqns,linspace(0,TimeLen(i),650),y0,options,p);
@@ -39,6 +43,8 @@ for i = 1:length(TimeLen)
 
     y0 = Y1(end,:);
     
+     y0(6) = y0(6)+1;
+    
     Yo1 = [Yo1; Y1];
     if i-1~=0
         a = a+TimeLen(i-1);
@@ -50,6 +56,8 @@ for i = 1:length(TimeLen)
     TotalDo2=[TotalDo2; TotalD(:,2)];
     TotalDo3 = [TotalDo3;TotalD(:,3)];
     TotalDo4 = [TotalDo4;TotalD(:,4)];
+    TotalDo5 = [TotalDo5;Y1(:,5)];
+    TotalDo6 = [TotalDo6;Y1(:,6)];
     DrugIno = [DrugIno; DrugIn];
     DrugOuto = [DrugOuto;  DrugOut];
 end
@@ -61,7 +69,11 @@ if abs(mean(BalanceD1))>1e-6
     disp(BalanceD1)
 end
 
-plot(To1,Yo1(:,5))
+TotalDo = [TotalDo4 TotalDo2 TotalDo3 TotalDo1 TotalDo5 TotalDo6];
 
+plot(To1, TotalDo6)
+
+
+save dose-1.mat To1 TotalDo
 
 %%

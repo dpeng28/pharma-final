@@ -20,8 +20,8 @@
         y =ys;
         
         
-        p_perturb = [p(1); p(2)];
-    for i=1:length(p_perturb)
+        %p_perturb = [p(1); p(2)];
+    for i=1:length(p)
         %%%add if p _perturb change
         p=p0;
         p(i)=p0(i)*(1.0+ParamDelta);
@@ -42,6 +42,9 @@
     
     figure;
     bar(Sens4)
+    
+    
+   
     
     
     %%
@@ -89,3 +92,5 @@
     
     figure;
     bar(Sens4)
+    
+    save sens(y1y6).mat Sens4

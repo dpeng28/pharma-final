@@ -5,13 +5,13 @@ alpha = p(2);   %%increased degradation rate due to exercise
 
 %1 weight - kg
 %2 height - cm 
-Kgo = p(3);
-Kgg = p(4);
+Kgo = p(3);  % decrease
+Kgg = p(4);  % increase
 Kgl = p(5);
 Klp = p(6); %ls
 Kpl = p(7);  %sl
-Kpg = p(8);  %sg
-Kpo = p(9);  %s0
+Kpg = p(8);  %sg % decrease
+Kpo = p(9);  %s0  % decrease
 Vc = p(10); % * weight
 k_in = p(11);
 k_out = p(12);
@@ -25,7 +25,7 @@ Glu_baseline = p(19);
 n_GI =  p(20);
 n_L = p(21);
 n_p =  p(22);
-kin2 = p(23);%% need to change, PAPER 
+diet = p(23);%% need to change, PAPER 
 
 
 dydt = zeros(7,1);    % make it a column vector
@@ -39,7 +39,7 @@ dydt = zeros(7,1);    % make it a column vector
 
 
 %----------------Original ODEs---------------------%
- dydt(1) =  -y(1)*(Kgo + Kgg)*p(1);%%% dependent on weight or not ??*p(1);
+ dydt(1) =  -y(1)*(Kgo + Kgg);%%% dependent on weight or not ??*p(1);
  dydt(2) =   y(1)*Kgg + y(4)*Kpg - y(2)*Kgl;
  dydt(3) =   y(2)*Kgl + y(4)*Kpl - y(3)*Klp;
  dydt(4) =   y(3)*Klp - y(4)*(Kpl + Kpg + Kpo);
@@ -48,9 +48,9 @@ dydt = zeros(7,1);    % make it a column vector
 %--------------Metformin glucose-lowering effect----------%
 
 %-------------Effect equaitons--------------------------%
- E_L = (V_L_max*y(3)^n_L) / ((V_L_50*1000)^n_L + (y(3))^n_L); %Hill Equation
- E_GI = (V_GI_max*y(2)^n_GI) / ((V_GI_50*1000)^n_GI + y(2)^n_GI); %Hill Equation
- E_p = (V_p_max*y(4)^n_p) / ((V_p_50*1000)^n_p + y(4)^n_p); %Hill Equation
+ E_L = (V_L_max*y(3)^n_L) / ((V_L_50/1000)^n_L + (y(3))^n_L); %Hill Equation
+ E_GI = (V_GI_max*y(2)^n_GI) / ((V_GI_50/1000)^n_GI + y(2)^n_GI); %Hill Equation
+ E_p = (V_p_max*y(4)^n_p) / ((V_p_50/1000)^n_p + y(4)^n_p); %Hill Equation
 
 %----------------Add in ODEs----------------------%
  dydt(5) =   k_in*(1 - E_L) - k_out*(1 + E_GI + E_p)*y(5);  %%%%% mg/dl 
@@ -58,5 +58,5 @@ dydt = zeros(7,1);    % make it a column vector
 % Blood concentration
   %describing glucose change related to food/drink 
  
- dydt(6) =   k_in*(1 - E_L) - k_out*(1+alpha)*(1 + E_GI + E_p)*y(6) + k_in*((y(6)-Glu_baseline)/(Vc*weight));
+ dydt(6) =  k_in*(1-E_L) - k_out*(1+alpha)*(1 + E_GI + E_p)*(y(6));%+Glu_baseline) + k_in*(1-E_L)*((y(6))/(p(10)*weight));
  % 

@@ -6,23 +6,31 @@ p = bigTable(5000,:);
 p(:,1) = 70;%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 p(:,2) = 0;% no exercise
 p(:,19) = 196.5;% baseline
-p(:,23) = 0; % not diet
+p(:,23) = 50; % not diet
+%p(:,10)= 18;
 p = [p]';
 
 
-TimeLen = 1000;
+%%%%%%
+%p(9,:) = p(9,:)./10;
 
-y0 = [500 0 0 0 196.5 0 0 ]'; % y(6) need to be larger than 196.5
+
+TimeLen = 1000;%%%%%%%%%%%%%%%%%%%y(6)-->196.5+GI*carbo_weight/100/Vc/weight
+
+y0 = [500 0 0 0 196.5 250 0 ]'; % y(6) need to be larger than 196.5
 
 [t,y_4,y] = Metformin_main(p,y0,TimeLen);
 
 plot(t,y(:,6))
 hold on;
 
+%%
+            
+
  %% fitting
-            x1 = [0.458,0.910,1.01*10^(-2)];%1.88*10^(-3),1.85*10^(-3),...,4.13,0.509
-            lb = x1./100;%
-            ub = x1.*100;
+            x1 = [0.458,0.910, 1.01*10^(-2)];%1.88*10^(-3),1.85*10^(-3),...,4.13,0.509
+            lb = x1./10;%
+            ub = x1.*10;
            
             options = optimoptions('lsqnonlin','Display','iter');
             optimal = lsqnonlin(@cost_func,x1,lb,ub,options);
