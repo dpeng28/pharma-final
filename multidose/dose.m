@@ -9,17 +9,28 @@ mat = horzcat([0, 0, 0]', TimeLenG');
 mat2 = horzcat([1,1,1]',TimeLenM');
 mat = vertcat(mat,mat2);
 mat = sortrows(mat,2);
+mat = vertcat(mat,[-1,24]);
 for n=1:length(mat)
     if mat(n,2) <0
         %print(n)
         mat(n,:) = [];
     end
 end
+b = mat(1,2);
+mat2 = mat;
 for n=1:length(mat)
-    mat(n,2)=mat(n,2)-mat(1,2);
+    if n == 1
+        mat2(n,2)=mat(n,2)-b;
+        disp(mat2)
+    else
+        
+        mat2(n,2)=mat(n,2)-mat(n-1,2);
+        disp(mat2)
+    end
 end
-mat = vertcat(mat,[-1,24]);
 
+
+mat = mat2;
 y0 = [0 0 0 0 196.5 196.5 0 0 0 0]';
 
 Yo1 = [];
@@ -34,21 +45,34 @@ DrugIno = [];
 DrugOuto = [];
 DrugIn = zeros(650,1);
 a=0;
+logic = false;
 for i = 1:(length(mat)-1)
+    if logic
+        i = i+1;
+        logic = false;
+    end
     if (mat(i,1)==1)&&(mat(i+1,2)~=0)
         y0(1)=y0(1)+DoseLen;
         DrugIn = DrugIn+DoseLen ;
+        time = mat(i+1,2);
     elseif (mat(i,1)==0)&&(mat(i+1,2)~=0)
         y0(8)=y0(8)+DietLen/p(23);
+        time = mat(i+1,2);
     elseif (mat(i+1,2)==0)
         y0(1)=y0(1)+DoseLen;
         DrugIn = DrugIn+DoseLen ;
         y0(8)=y0(8)+DietLen/p(23);
+        time = mat(i+2,2);
+        i=i+2;
+        logic = true;
+    elseif (i>1&&mat(i,2)==0)
+        continue
     elseif (mat(i+1,1)==-1)
         y0 = y0;
+        time = mat(i+1,2);
     end
     options = odeset('MaxStep',5e-2, 'AbsTol', 1e-5,'RelTol', 1e-5,'InitialStep', 1e-2);
-    [T1,Y1] = ode45(@Meformin_eqns,linspace(0,mat(i+1,2)*60,650),y0,options,p);
+    [T1,Y1] = ode45(@Meformin_eqns,linspace(0,time*60,650),y0,options,p);
     
     TotalD(:,1) = Y1(:,4);%mass in blood
     TotalD(:,2) = Y1(:,2);%amont in wall
@@ -61,12 +85,19 @@ for i = 1:(length(mat)-1)
     
     Yo1 = [Yo1; Y1];
     if i-1~=0
-        a = a+mat(i,2)*60;
+        if logic
+            a = a+mat(i-2,2)*60;
+            %logic = false;
+            %disp(i)
+        else
+            a = a+mat(i,2)*60;
+        end
         disp(a)
         To1 = [To1;T1+a];
     else
         To1 = [To1;T1];
     end
+    
     TotalDo1=[TotalDo1; TotalD(:,1)];
     TotalDo2=[TotalDo2; TotalD(:,2)];
     TotalDo3 = [TotalDo3;TotalD(:,3)];
