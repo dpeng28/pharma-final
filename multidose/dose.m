@@ -58,7 +58,7 @@ for i = 1:(length(mat)-1)
     elseif (mat(i,1)==0)&&(mat(i+1,2)~=0)
         y0(8)=y0(8)+DietLen/p(23);
         time = mat(i+1,2);
-    elseif (mat(i+1,2)==0)
+    elseif (mat(i+1,2)==0)&&(i <length(mat)-2)
         y0(1)=y0(1)+DoseLen;
         DrugIn = DrugIn+DoseLen ;
         y0(8)=y0(8)+DietLen/p(23);
