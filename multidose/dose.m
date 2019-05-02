@@ -46,11 +46,13 @@ DrugOuto = [];
 DrugIn = zeros(650,1);
 a=0;
 logic = false;
-for i = 1:(length(mat)-1)
-    if logic
-        i = i+1;
-        logic = false;
-    end
+i = 1;
+while (i <=(length(mat)-1))
+    disp(i)
+%     if logic
+%         i = i+1;
+%         logic = false;
+%     end
     if (mat(i,1)==1)&&(mat(i+1,2)~=0)
         y0(1)=y0(1)+DoseLen;
         DrugIn = DrugIn+DoseLen ;
@@ -58,7 +60,7 @@ for i = 1:(length(mat)-1)
     elseif (mat(i,1)==0)&&(mat(i+1,2)~=0)
         y0(8)=y0(8)+DietLen/p(23);
         time = mat(i+1,2);
-    elseif (mat(i+1,2)==0)&&(i <length(mat)-2)
+    elseif (mat(i+1,2)==0)&&(i <=(length(mat)-2))
         y0(1)=y0(1)+DoseLen;
         DrugIn = DrugIn+DoseLen ;
         y0(8)=y0(8)+DietLen/p(23);
@@ -70,6 +72,7 @@ for i = 1:(length(mat)-1)
     elseif (mat(i+1,1)==-1)
         y0 = y0;
         time = mat(i+1,2);
+
     end
     options = odeset('MaxStep',5e-2, 'AbsTol', 1e-5,'RelTol', 1e-5,'InitialStep', 1e-2);
     [T1,Y1] = ode45(@Meformin_eqns,linspace(0,time*60,650),y0,options,p);
@@ -88,7 +91,7 @@ for i = 1:(length(mat)-1)
         if logic
             a = a+mat(i-2,2)*60;
             %logic = false;
-            %disp(i)
+            disp("aaa")
         else
             a = a+mat(i,2)*60;
         end
