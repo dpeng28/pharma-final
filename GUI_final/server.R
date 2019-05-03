@@ -4,11 +4,10 @@ library(R.matlab)
 library(ggplot2)
 library(reshape)
 library(plotly)
-library(randomForest)
 library(matlabr)
+library(slickR)
 
-setwd("C:/Users/Dan/OneDrive/Documents/Pharma/Final/GUI_final")
-
+myMatlabPath = "C:/Program Files/MATLAB/R2019a/bin" # change this as appropriate 
 setwd(paste0(getwd(), "/Data"))
 
 # load in young population 
@@ -48,7 +47,7 @@ plotBoxPop <- function(popYoung, popMid, popOld, selection) {
 }
 # load in the sensitivity data for young population 
 sensYoung = read.table("young_sens.txt")
-colnames(sensYoung) = c('kg0', 'kgg', 'kgl', 'klp', 'kpl', 'kpg', 'kp0', 'kin')
+colnames(sensYoung) = c('kg0', 'kgg', 'kgl', 'klp', 'kpl', 'kpg', 'kp0', 'kin', 'dose')
 rownames(sensYoung) = c('AUC', 'Ctrough_drug', 'Ctrough_glucose')
 melt_sensYoung = data.frame(parameters = NULL, target = NULL, value = NULL)
 for(myParam in colnames(sensYoung)) {
@@ -60,7 +59,7 @@ for(myParam in colnames(sensYoung)) {
 
 # load in the sensitivity data for older mid age population 
 sensMid = read.table("mid_sens.txt")
-colnames(sensMid) = c('kg0', 'kgg', 'kgl', 'klp', 'kpl', 'kpg', 'kp0', 'kin')
+colnames(sensMid) = c('kg0', 'kgg', 'kgl', 'klp', 'kpl', 'kpg', 'kp0', 'kin', 'dose')
 rownames(sensMid) = c('AUC', 'Ctrough_drug', 'Ctrough_glucose')
 melt_sensMid = data.frame(parameters = NULL, target = NULL, value = NULL)
 for(myParam in colnames(sensMid)) {
@@ -72,7 +71,7 @@ for(myParam in colnames(sensMid)) {
 
 # load in the sensitivity data for older mid age population 
 sensOld = read.table("old_sens.txt")
-colnames(sensOld) = c('kg0', 'kgg', 'kgl', 'klp', 'kpl', 'kpg', 'kp0', 'kin')
+colnames(sensOld) = c('kg0', 'kgg', 'kgl', 'klp', 'kpl', 'kpg', 'kp0', 'kin', 'dose')
 rownames(sensOld) = c('AUC', 'Ctrough_drug', 'Ctrough_glucose')
 melt_sensOld = data.frame(parameters = NULL, target = NULL, value = NULL)
 
@@ -189,7 +188,7 @@ plotPersonalGlucose <- function(amountMet,
     
     write.csv(outputData, file = "multidose_personalizeMatlab/personal_matlab.csv")
     
-    options(matlab.path = "C:/Program Files/MATLAB/R2019a/bin")
+    options(matlab.path = myMatlabPath)
     have_matlab()
     run_matlab_script(fname = "multidose_personalizeMatlab/run.m")
     
@@ -212,6 +211,8 @@ plotPersonalGlucose <- function(amountMet,
         geom_line(data = glucoseDietPM, size = 1.2) + 
         ylab("Concentration - mg/dL")+
         xlab("Time - minutes")+
+        geom_hline(yintercept=100, linetype="dashed", color = "green", size=1)+
+        geom_hline(yintercept=70, linetype="dashed", color = "red", size=1)+
         theme(text = element_text(size=14))+
         theme_bw()
     
@@ -238,7 +239,7 @@ plotPersonalMetformin <- function(amountMet,
     
     write.csv(outputData, file = "multidose_personalizeMatlab/personal_matlab.csv")
     
-    options(matlab.path = "C:/Program Files/MATLAB/R2019a/bin")
+    options(matlab.path = myMatlabPath)
     have_matlab()
     run_matlab_script(fname = "multidose_personalizeMatlab/run.m")
     
@@ -335,6 +336,11 @@ shinyServer(function(input, output) {
                             input$met3, 
                             input$yourWeight, 
                             input$yourAge)
+    })
+    
+    output$slickr <- renderSlickR({
+        imgs <- list.files("SlideShow/", pattern=".png", full.names = TRUE)
+        slickR(imgs)
     })
   
 })

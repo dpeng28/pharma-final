@@ -4,8 +4,6 @@ library(R.matlab)
 library(ggplot2)
 library(plotly)
 
-setwd("C:/Users/Dan/OneDrive/Documents/Pharma/Final/GUI_final")
-
 # Define UI for application that draws a histogram
 shinyUI(
     dashboardPage(
@@ -15,33 +13,38 @@ shinyUI(
             title = "Metformin Simulator"
         ),
         dashboardSidebar(
-            numericInput("yourWeight", label = h3("What's your weight"), value = 89),
+            numericInput("yourWeight", label = h3("What's your weight - kg"), value = 89),
             numericInput("yourAge", label = h3("What's your age"), value = 50),
-            numericInput("dailyGlucoseInput", label = h3("Glucose input per meal"), value = 50),
+            numericInput("dailyGlucoseInput", label = h3("Glucose input per meal - g"), value = 50),
             
             
             sliderInput("meal1", label = h3("1st Meal Time"), min = -1, max = 24, value = 7),
-            sliderInput("meal2", label = h3("2st Meal Time"), min = -1, max = 24, value = 12),
-            sliderInput("meal3", label = h3("3st Meal Time"), min = -1, max = 24, value = 19),
+            sliderInput("meal2", label = h3("2nd Meal Time"), min = -1, max = 24, value = 12),
+            sliderInput("meal3", label = h3("3rd Meal Time"), min = -1, max = 24, value = 19),
             
             
-            numericInput("dailyMetforminInput", label = h3("Metformin input per meal"), min = 0, max = 500, value = 250),
+            numericInput("dailyMetforminInput", label = h3("Metformin input per meal - mg"), min = 0, max = 500, value = 250),
             
             sliderInput("met1", label = h3("1st Metformin Time"), min = -1, max = 24, value = 7),
-            sliderInput("met2", label = h3("2st Metformin Time"), min = -1, max = 24, value = 12),
-            sliderInput("met3", label = h3("3st Metformin Time"), min = -1, max = 24, value = 19)
+            sliderInput("met2", label = h3("2nd Metformin Time"), min = -1, max = 24, value = 12),
+            sliderInput("met3", label = h3("3rd Metformin Time"), min = -1, max = 24, value = 19)
             
         ),
         dashboardBody(
             # Output: bunch of tabsetpanel ----
             tabsetPanel(type = "tabs",
                         tabPanel(h4("Introduction"),
-                        h1("Significance"), 
-                        
-                        h4("Metformin is a good drug for people with blood glucose issues"), 
-                        br(), 
-                        h1("Our Method"), 
-                        h4("We run mathematical models")
+                                 br(),
+                                 fluidRow(
+                                     box(
+                                         title = "Here is a short introduction...", 
+                                         status = "info", 
+                                         solidHeader = TRUE, 
+                                         width = 12,
+                                         
+                                         slickROutput("slickr", height = "800")
+                                     )
+                                 )
                         
                                  ),
                         # Model Exploration tab ----

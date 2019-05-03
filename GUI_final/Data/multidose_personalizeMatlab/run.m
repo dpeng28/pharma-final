@@ -18,11 +18,6 @@ TimeLenG = T.timeGlu';
 TimeLenM = T.timeMet';
 DoseLen = T.amountMet(1);
 DietLen = T.amountGlu(1)*1000;
-% TimeLenG = [7 0 0];
-% TimeLenM = [7 0 0];
-% DoseLen = 500;
-% DietLen = 200;
-
 
 [To1,TotalDo] = dose(p,TimeLenG,TimeLenM,DoseLen,DietLen);       
 
