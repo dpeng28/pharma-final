@@ -10,11 +10,14 @@ mat2 = horzcat([1,1,1]',TimeLenM');
 mat = vertcat(mat,mat2);
 mat = sortrows(mat,2);
 mat = vertcat(mat,[-1,24]);
-for n=1:length(mat)
+n = 1;
+while  (n<=length(mat))
     if mat(n,2) <0
         %print(n)
         mat(n,:) = [];
+        
     end
+    n = n+1;
 end
 b = mat(1,2);
 mat2 = mat;
@@ -31,7 +34,7 @@ end
 
 
 mat = mat2;
-y0 = [0 0 0 0 196.5 196.5 0 0 0 0]';
+y0 = [0 0 0 0 171.5 171.5 0 0 0 0]';
 
 Yo1 = [];
 To1 = [];
@@ -57,9 +60,11 @@ while (i <=(length(mat)-1))
         y0(1)=y0(1)+DoseLen;
         DrugIn = DrugIn+DoseLen ;
         time = mat(i+1,2);
+        i = i+1;
     elseif (mat(i,1)==0)&&(mat(i+1,2)~=0)
         y0(8)=y0(8)+DietLen/p(23);
         time = mat(i+1,2);
+        i = i+1;
     elseif (mat(i+1,2)==0)&&(i <=(length(mat)-2))
         y0(1)=y0(1)+DoseLen;
         DrugIn = DrugIn+DoseLen ;
@@ -92,8 +97,9 @@ while (i <=(length(mat)-1))
             a = a+mat(i-2,2)*60;
             %logic = false;
             disp("aaa")
+            logic = false;
         else
-            a = a+mat(i,2)*60;
+            a = a+mat(i-1,2)*60;
         end
         disp(a)
         To1 = [To1;T1+a];
@@ -118,7 +124,7 @@ if abs(mean(BalanceD1))>1e-6
     %disp(BalanceD1)
 end
 
-TotalDo = [TotalDo4 TotalDo2 TotalDo3 TotalDo1 TotalDo5 TotalDo6];
+TotalDo = [TotalDo1 TotalDo2 TotalDo3 TotalDo4 TotalDo5 TotalDo6];
 
 %plot(To1, TotalDo6)
 
