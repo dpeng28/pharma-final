@@ -15,9 +15,9 @@ while  (n<=length(mat))
     if mat(n,2) <0
         %print(n)
         mat(n,:) = [];
-        
+    else 
+        n = n+1;
     end
-    n = n+1;
 end
 b = mat(1,2);
 mat2 = mat;
