@@ -1,7 +1,7 @@
 function dydt = Meformin_eqns(t,y,p)
 
 weight = p(1); 
-kgp = 0.1;%%%%%%%%%
+kgp = 0.03;%%%%%%%%%
 
 %1 weight - kg
 %2 height - cm 
@@ -48,9 +48,9 @@ dydt = zeros(10,1);    % make it a column vector
 %--------------Metformin glucose-lowering effect----------%
 
 %-------------Effect equaitons--------------------------%
- E_L = (V_L_max*y(3)^n_L) / ((V_L_50*1000)^n_L + (y(3))^n_L); %Hill Equation
- E_GI = (V_GI_max*y(2)^n_GI) / ((V_GI_50*1000)^n_GI + y(2)^n_GI); %Hill Equation
- E_p = (V_p_max*y(4)^n_p) / ((V_p_50*1000)^n_p + y(4)^n_p); %Hill Equation
+ E_L = (V_L_max*y(3)^n_L) / ((V_L_50/1000)^n_L + (y(3))^n_L); %Hill Equation
+ E_GI = (V_GI_max*y(2)^n_GI) / ((V_GI_50/1000)^n_GI + y(2)^n_GI); %Hill Equation
+ E_p = (V_p_max*y(4)^n_p) / ((V_p_50/1000)^n_p + y(4)^n_p); %Hill Equation
 
 %----------------Add in ODEs----------------------%
  dydt(5) =   k_in*(1 - E_L) - k_out*(1 + E_GI + E_p)*y(5);  %%%%% mg/dl 
