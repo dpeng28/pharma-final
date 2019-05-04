@@ -37,7 +37,7 @@ end
 
 out1 = T1;
 out2 = Y1;%.*(1000)./(p(10)*p(1)); % unit correction: ug/ml or mg/l
-out3 = trapz(Y1(:,8));
+out3 = trapz(Y1(:,4));
 
 end
 

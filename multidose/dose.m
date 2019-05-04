@@ -1,5 +1,5 @@
 
-function [To1,TotalDo] = dose(p,TimeLenG,TimeLenM,DoseLen,DietLen)
+function [To1,TotalDo,AUC,Ctrough,Ctroughp] = dose(p,TimeLenG,TimeLenM,DoseLen,DietLen)
 
 %p(:,2) = 0;% no exercise
 %p(:,19) = 196.5;% baseline
@@ -50,6 +50,8 @@ DrugIn = zeros(650,1);
 a=0;
 logic = false;
 i = 1;
+Ctrough = [];
+Ctroughp = [];
 while (i <=(length(mat)-1))
     disp(i)
 %     if logic
@@ -115,6 +117,8 @@ while (i <=(length(mat)-1))
     TotalDo6 = [TotalDo6;Y1(:,6)];
     DrugIno = [DrugIno; DrugIn];
     DrugOuto = [DrugOuto;  DrugOut];
+    Ctrough = [Ctrough TotalD(end,1)];
+    Ctroughp = [Ctroughp Y1(end,6)];
 end
 BalanceD1 = DrugIno - DrugOuto - TotalDo1 - TotalDo2 - TotalDo3 - TotalDo4;
 
@@ -124,10 +128,10 @@ if abs(mean(BalanceD1))>1e-6
     %disp(BalanceD1)
 end
 
-TotalDo = [TotalDo1 TotalDo2 TotalDo3 TotalDo4 TotalDo5 TotalDo6];
+TotalDo = [TotalDo4 TotalDo2 TotalDo3 TotalDo1 TotalDo5 TotalDo6];
 
 %plot(To1, TotalDo6)
-
+AUC = trapz(TotalDo(:,4))
 
 %%%%%%%save dose-1.mat To1 TotalDo
 
