@@ -130,7 +130,7 @@ plotGlucose <- function(plotDf, yRange, timeRange) {
     basePlot <- ggplot(plotDf, aes(time, yaxis)) + 
         geom_line(data = plotDf, size = 1.2) + 
         ylab("Concentration - mg/dL")+
-        xlab("Time - minutes")+
+        xlab("Time - hours")+
         ylim(yRange[1], yRange[2])+
         xlim(timeRange[1], timeRange[2])+
         theme(text = element_text(size=14))+
@@ -145,7 +145,7 @@ plotConcSim <- function(concPlotDf, concRange, timeRange){
     basePlot <- ggplot(concPlotDf, aes(time, conc, color = compartment)) + 
         geom_line(data = concPlotDf, size = 1.2) + 
         ylab("Amount - mg")+
-        xlab("Time - minutes")+
+        xlab("Time - hours")+
         ylim(concRange[1], concRange[2])+
         xlim(timeRange[1], timeRange[2])+
         theme(text = element_text(size=14))+
@@ -210,7 +210,7 @@ plotPersonalGlucose <- function(amountMet,
     basePlot <- ggplot(glucoseDietPM, aes(time, yaxis)) + 
         geom_line(data = glucoseDietPM, size = 1.2) + 
         ylab("Concentration - mg/dL")+
-        xlab("Time - minutes")+
+        xlab("Time - hours")+
         geom_hline(yintercept=100, linetype="dashed", color = "green", size=1)+
         geom_hline(yintercept=70, linetype="dashed", color = "red", size=1)+
         theme(text = element_text(size=14))+
@@ -263,7 +263,7 @@ plotPersonalMetformin <- function(amountMet,
     basePlot <- ggplot(concPlotPM, aes(time, conc, color = compartment)) + 
         geom_line(data = concPlotPM, size = 1.2) + 
         ylab("Amount - mg")+
-        xlab("Time - minutes")+
+        xlab("Time - hours")+
         theme(text = element_text(size=14))+
         theme_bw()
     

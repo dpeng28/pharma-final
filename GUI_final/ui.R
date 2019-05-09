@@ -42,7 +42,7 @@ shinyUI(
                                          solidHeader = TRUE, 
                                          width = 12,
                                          
-                                         slickROutput("slickr", height = "800")
+                                         slickROutput("slickr")
                                      )
                                  )
                         
