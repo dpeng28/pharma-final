@@ -87,7 +87,7 @@ plotSens <- function(meltedSensDf) {
     
     p = ggplot(meltedSensDf, aes(parameters, target)) +
         scale_fill_gradientn(colours = mycol)+
-        theme(text = element_text(size=14))+
+        theme(text = element_text(size=20))+
         xlab("Parameters") +
         ylab("Targets") +
         geom_tile(aes(fill = value))
