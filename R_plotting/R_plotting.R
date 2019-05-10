@@ -13,11 +13,11 @@ scientific_10 <- function(x) {
 ggplot(plotDf, aes(t, balance)) + 
     geom_line(data = plotDf, size = 1.2) + 
     ggtitle("Mass Balance of Metformin")+
-    ylab("Concentration - mg")+
+    ylab("Amount - mg")+
     xlab("Time - min")+
     scale_y_continuous(label=scientific_10)+
     theme_bw()+
-    theme(text = element_text(size=24))
+    theme(text = element_text(size=20))
 
 
 
@@ -46,6 +46,30 @@ ggplot(concPlotDf, aes(time, conc, color = compartment)) +
     ggtitle("Metformin Amount Over Time")+
     ylab("Amount - mg")+
     xlab("Time - min")+
+    theme_bw()+
+    theme(text = element_text(size=20), legend.position=c(.8, .6))
+
+# focused in 
+
+glucoseDiet$Diet_Status = "With Food"
+glucoseNoDiet$Diet_Status = "No Food"
+glcosePlot = rbind(glucoseDiet, glucoseNoDiet)
+
+ggplot(glcosePlot, aes(time, yaxis, color = Diet_Status)) + 
+    geom_line(data = glcosePlot, size = 1.2) + 
+    ggtitle("Glucose Concentration")+
+    ylab("Concentration - mg/dL")+
+    xlab("Time - min")+
+    theme_bw()+
+    theme(text = element_text(size=20), legend.position=c(.8, .6))
+
+# metforming plotting 
+ggplot(concPlotDf, aes(time, conc, color = compartment)) + 
+    geom_line(data = concPlotDf, size = 1.2) + 
+    ggtitle("Metformin Amount Over Time-Zoomed In")+
+    ylab("Amount - mg")+
+    xlab("Time - min")+
+    ylim(c(0, 15))+
     theme_bw()+
     theme(text = element_text(size=20), legend.position=c(.8, .6))
 
@@ -240,3 +264,58 @@ ggplot(glucoseDietPM, aes(time, yaxis)) +
     geom_hline(yintercept=70, linetype="dashed", color = "red", size=1)+
     theme_bw() +
     theme(text = element_text(size=20))
+
+
+#####
+# plot heatmap 
+# load in the sensitivity data for young population 
+sensYoung = read.table("../GUI_final/Data/young_sens.txt")
+colnames(sensYoung) = c('kg0', 'kgg', 'kgl', 'klp', 'kpl', 'kpg', 'kp0', 'kin', 'dose')
+rownames(sensYoung) = c('Drug AUC', 'Drug Ctrough', 'Glucose Ctrough')
+melt_sensYoung = data.frame(parameters = NULL, target = NULL, value = NULL)
+for(myParam in colnames(sensYoung)) {
+    for(myTarget in rownames(sensYoung)) {
+        tempDf = data.frame(parameters = myParam, target = myTarget, norm_sens = sensYoung[myTarget, myParam])
+        melt_sensYoung = rbind(melt_sensYoung, tempDf)
+    }
+}
+
+# load in the sensitivity data for older mid age population 
+sensMid = read.table("../GUI_final/Data/mid_sens.txt")
+colnames(sensMid) = c('kg0', 'kgg', 'kgl', 'klp', 'kpl', 'kpg', 'kp0', 'kin', 'dose')
+rownames(sensMid) = c('Drug AUC', 'Drug Ctrough', 'Glucose Ctrough')
+melt_sensMid = data.frame(parameters = NULL, target = NULL, value = NULL)
+for(myParam in colnames(sensMid)) {
+    for(myTarget in rownames(sensMid)) {
+        tempDf = data.frame(parameters = myParam, target = myTarget, norm_sens = sensMid[myTarget, myParam])
+        melt_sensMid = rbind(melt_sensMid, tempDf)
+    }
+}
+
+# load in the sensitivity data for older mid age population 
+sensOld = read.table("../GUI_final/Data/old_sens.txt")
+colnames(sensOld) = c('kg0', 'kgg', 'kgl', 'klp', 'kpl', 'kpg', 'kp0', 'kin', 'dose')
+rownames(sensOld) = c('Drug AUC', 'Drug Ctrough', 'Glucose Ctrough')
+melt_sensOld = data.frame(parameters = NULL, target = NULL, value = NULL)
+
+for(myParam in colnames(sensOld)) {
+    for(myTarget in rownames(sensOld)) {
+        tempDf = data.frame(parameters = myParam, target = myTarget, norm_sens = sensOld[myTarget, myParam])
+        melt_sensOld = rbind(melt_sensOld, tempDf)
+    }
+}
+
+plotSens <- function(meltedSensDf) {
+    mycol <- c("darkgreen", 'white', 'darkred')
+    
+    p = ggplot(meltedSensDf, aes(parameters, target)) +
+        scale_fill_gradientn(colours = mycol)+
+        labs(fill = "Normalized \n Sensitivity")+
+        theme(text = element_text(size=24))+
+        xlab("Parameters") +
+        ylab("Targets") +
+        geom_tile(aes(fill = norm_sens))
+    
+    # return 
+    p
+}
