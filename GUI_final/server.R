@@ -130,7 +130,7 @@ plotGlucose <- function(plotDf, yRange, timeRange) {
     basePlot <- ggplot(plotDf, aes(time, yaxis)) + 
         geom_line(data = plotDf, size = 1.2) + 
         ylab("Concentration - mg/dL")+
-        xlab("Time - hours")+
+        xlab("Time - min")+
         ylim(yRange[1], yRange[2])+
         xlim(timeRange[1], timeRange[2])+
         theme(text = element_text(size=14))+
@@ -145,7 +145,7 @@ plotConcSim <- function(concPlotDf, concRange, timeRange){
     basePlot <- ggplot(concPlotDf, aes(time, conc, color = compartment)) + 
         geom_line(data = concPlotDf, size = 1.2) + 
         ylab("Amount - mg")+
-        xlab("Time - hours")+
+        xlab("Time - min")+
         ylim(concRange[1], concRange[2])+
         xlim(timeRange[1], timeRange[2])+
         theme(text = element_text(size=14))+
@@ -165,7 +165,7 @@ plotFitData <- function(sampleFit) {
         geom_line(data = simData, size = 1.2) + 
         geom_point(data = expData, size = 2, color = 'red')+
         ylab("Concentration - mg/L")+
-        xlab("Time - Hour")+
+        xlab("Time - min")+
         theme(text = element_text(size=14))+
         theme_bw()
         

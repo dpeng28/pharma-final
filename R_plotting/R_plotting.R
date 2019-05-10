@@ -7,12 +7,15 @@ library(ggplot2)
 balance = readMat("balance.mat")
 
 plotDf = data.frame(time = as.vector(balance[1]), conc = balance[2])
-
-basePlot <- ggplot(plotDf, aes(t, balance)) + 
+scientific_10 <- function(x) {
+    parse(text=gsub("e", " %*% 10^", scales::scientific_format()(x)))
+}
+ggplot(plotDf, aes(t, balance)) + 
     geom_line(data = plotDf, size = 1.2) + 
     ggtitle("Mass Balance of Metformin")+
     ylab("Concentration - mg")+
-    xlab("Time - hours")+
+    xlab("Time - min")+
+    scale_y_continuous(label=scientific_10)+
     theme_bw()+
     theme(text = element_text(size=24))
 
@@ -42,16 +45,16 @@ ggplot(concPlotDf, aes(time, conc, color = compartment)) +
     geom_line(data = concPlotDf, size = 1.2) + 
     ggtitle("Metformin Amount Over Time")+
     ylab("Amount - mg")+
-    xlab("Time - hours")+
+    xlab("Time - min")+
     theme_bw()+
-    theme(text = element_text(size=20))
+    theme(text = element_text(size=20), legend.position=c(.8, .6))
 
 # glucose no diet plotting
 ggplot(glucoseNoDiet, aes(time, yaxis)) + 
     geom_line(data = glucoseNoDiet, size = 1.2) + 
     ggtitle("Glucose Concentration without Glucose Input")+
     ylab("Concentration - mg/dL")+
-    xlab("Time - hours")+
+    xlab("Time - min")+
     theme_bw()+
     theme(text = element_text(size=20))
 
@@ -60,7 +63,7 @@ ggplot(glucoseDiet, aes(time, yaxis)) +
     geom_line(data = glucoseDiet, size = 1.2) + 
     ggtitle("Glucose Concentration with Glucose Input")+
     ylab("Concentration - mg/dL")+
-    xlab("Time - hours")+
+    xlab("Time - min")+
     theme_bw()+
     theme(text = element_text(size=20))
 
@@ -85,63 +88,73 @@ liverPlot = rbind(liverPlot[liverPlot$Dose_Amount == "1500mg",],
                   liverPlot[liverPlot$Dose_Amount == "550mg",],
                   liverPlot[liverPlot$Dose_Amount == "500mg",], 
                   liverPlot[liverPlot$Dose_Amount == "200mg",])
+liverPlot$Dose_Amount <- factor(liverPlot$Dose_Amount, levels = c("1500mg", "700mg", "550mg", "500mg", "200mg"))
+liverPlot$miniTitle = "Metformin Amount in Liver Over Time"
 
 # metforming liver plotting 
 ggplot(liverPlot, aes(t, amount, color = Dose_Amount)) + 
     geom_line(data = liverPlot, size = 1.2) + 
     ggtitle("Metformin Amount in Liver Over Time")+
     ylab("Amount - mg")+
-    xlab("Time - hours")+
+    xlab("Time - min")+
     theme_bw()+
-    theme(text = element_text(size=20))
+    theme(text = element_text(size=20), legend.position = c(0.8, 0.6))
 
 # plot periphery 
 bloodPlot = data.frame(time = NULL, amount = NULL, Dose_Amount = NULL)
-for(myIndex in 2:5) {
+for(myIndex in 2:6) {
     temp = data.frame(time = diffDoseRaw[1], amount = diffDoseRaw[[myIndex]][,4], Dose_Amount = doseScheme[myIndex])
     bloodPlot = rbind(bloodPlot, temp)
     print(myIndex)
 }
 
+bloodPlot$Dose_Amount <- factor(bloodPlot$Dose_Amount, levels = c("1500mg", "700mg", "550mg", "500mg", "200mg"))
+bloodPlot$miniTitle = "Metformin Amount in Blood Over Time"
 ggplot(bloodPlot, aes(t, amount, color = Dose_Amount)) + 
     geom_line(data = bloodPlot, size = 1.2) + 
     ggtitle("Metformin Amount in Blood Over Time")+
     ylab("Amount - mg")+
-    xlab("Time - hours")+
+    xlab("Time - min")+
     theme_bw()+
-    theme(text = element_text(size=20))
+    theme(text = element_text(size=20), legend.position = c(0.8, 0.6))
 
 # plot glucoseConc without diet  
 gluPlot = data.frame(time = NULL, amount = NULL, Dose_Amount = NULL)
-for(myIndex in 2:5) {
+for(myIndex in 2:6) {
     temp = data.frame(time = diffDoseRaw[1], amount = diffDoseRaw[[myIndex]][,5], Dose_Amount = doseScheme[myIndex])
     gluPlot = rbind(gluPlot, temp)
     print(myIndex)
 }
 
+gluPlot$Dose_Amount <- factor(gluPlot$Dose_Amount, levels = c("1500mg", "700mg", "550mg", "500mg", "200mg"))
+gluPlot1 = gluPlot
+gluPlot1$miniTitle = "Blood Glucose Concentration[No Food Intake]"
+
 ggplot(gluPlot, aes(t, amount, color = Dose_Amount)) + 
     geom_line(data = gluPlot, size = 1.2) + 
     ggtitle("Blood Glucose Concentration[No Food Intake]")+
     ylab("Amount - mg/dL")+
-    xlab("Time - hours")+
+    xlab("Time - min")+
     theme_bw()+
-    theme(text = element_text(size=20))
+    theme(text = element_text(size=20), legend.position = c(0.75, 0.75))
 
 # plot glucoseConc With diet  
 gluPlot = data.frame(time = NULL, amount = NULL, Dose_Amount = NULL)
-for(myIndex in 2:5) {
+for(myIndex in 2:6) {
     temp = data.frame(time = diffDoseRaw[1], amount = diffDoseRaw[[myIndex]][,6], Dose_Amount = doseScheme[myIndex])
     gluPlot = rbind(gluPlot, temp)
     print(myIndex)
 }
-
+gluPlot$Dose_Amount <- factor(gluPlot$Dose_Amount, levels = c("1500mg", "700mg", "550mg", "500mg", "200mg"))
+gluPlot$miniTitle = "Blood Glucose Concentration[Food Intake]"
+    
 ggplot(gluPlot, aes(t, amount, color = Dose_Amount)) + 
     geom_line(data = gluPlot, size = 1.2) + 
     ggtitle("Blood Glucose Concentration[Food Intake]")+
     ylab("Amount - mg/dL")+
-    xlab("Time - hours")+
+    xlab("Time - min")+
     theme_bw()+
-    theme(text = element_text(size=20))
+    theme(text = element_text(size=20), legend.position = c(0.75, 0.75))
 
 
 # plot multidose 
@@ -164,7 +177,8 @@ ggplot(concPlotMDDf[concPlotMDDf$compartment == "GI_lumen", ], aes(time, conc)) 
     geom_line(size = 1.2) + 
     ggtitle("Metformin in GI Lumen")+
     ylab("Amount - mg")+
-    xlab("Time - hours")+
+    xlab("Time - min")+
+    xlim(0, 1100)+
     theme_bw()+
     theme(text = element_text(size=18))
 
@@ -173,7 +187,8 @@ ggplot(concPlotMDDf[concPlotMDDf$compartment == "periphery", ], aes(time, conc))
     geom_line(size = 1.2) + 
     ggtitle("Metformin in Periphery")+
     ylab("Amount - mg")+
-    xlab("Time - hours")+
+    xlab("Time - min")+
+    xlim(0, 1100)+
     theme_bw()+
     theme(text = element_text(size=18))
 
@@ -182,7 +197,8 @@ ggplot(glucoseNoDietMD, aes(time, yaxis)) +
     geom_line(size = 1.2) + 
     ggtitle("Glucose Concentration without Glucose Input")+
     ylab("Concentration - mg/dL")+
-    xlab("Time - hours")+
+    xlab("Time - min")+
+    xlim(0, 1100)+
     theme_bw()+
     theme(text = element_text(size=20))
 
@@ -191,7 +207,8 @@ ggplot(glucoseDietMD, aes(time, yaxis)) +
     geom_line(data = glucoseDietMD, size = 1.2) + 
     ggtitle("Glucose Concentration with Glucose Input")+
     ylab("Concentration - mg/dL")+
-    xlab("Time - hours")+
+    xlab("Time - min")+
+    xlim(0, 1100)+
     theme_bw()+
     theme(text = element_text(size=20))
 
